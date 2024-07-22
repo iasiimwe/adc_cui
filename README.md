@@ -34,7 +34,7 @@ For downstream analysis, seven R scripts are provided, but only five need to be 
 * '2. Simulating with uncertainty.R'
 * '4. CUI analysis.R' - this script will also source and run '3. ER analysis.R'
 * '5b. CUI_shiny.R' - this script will also source and run '5a. Process Shiny data.R'
-* '6. TDXd_CUI_10_percent.R'
+* '6. TDXd.R'
 
 ### Key Findings
 * Demonstrates the use of MBMA and CUI to assess the benefit-risk profiles of ADCs.
