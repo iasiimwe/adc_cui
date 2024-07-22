@@ -29,11 +29,12 @@ Before analysis, install the following R packages:
 The lixoftConnectors also need installation as described at https://monolix.lixoft.com/monolix-api/lixoftconnectors_installation/.  
 `install.packages("C:/Program Files/Lixoft/MonolixSuite2024R1/connectors/lixoftConnectors.tar.gz", repos = NULL, type="source", INSTALL_opts ="--no-multiarch")`
 
-For downstream analysis, six R scripts are provided, but only four need to be run.
+For downstream analysis, seven R scripts are provided, but only five need to be run.
 * '1. PopPK analysis.R'
 * '2. Simulating with uncertainty.R'
 * '4. CUI analysis.R' - this script will also source and run '3. ER analysis.R'
 * '5b. CUI_shiny.R' - this script will also source and run '5a. Process Shiny data.R'
+* '6. TDXd_CUI_10_percent.R'
 
 ### Key Findings
 * Demonstrates the use of MBMA and CUI to assess the benefit-risk profiles of ADCs.
