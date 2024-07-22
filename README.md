@@ -26,10 +26,10 @@ Before analysis, install the following R packages:
   install_if_missing(required_packages)
   ```
 
-The lixoftConnectors also need installation as described at https://monolix.lixoft.com/monolix-api/lixoftconnectors_installation/.  
+The lixoftConnectors package also needs installation as described at https://monolix.lixoft.com/monolix-api/lixoftconnectors_installation/.  
 `install.packages("C:/Program Files/Lixoft/MonolixSuite2024R1/connectors/lixoftConnectors.tar.gz", repos = NULL, type="source", INSTALL_opts ="--no-multiarch")`
 
-For downstream analysis, seven R scripts are provided, but only five need to be run.
+Seven R scripts are provided for analysis, but only five need to be run.
 * '1. PopPK analysis.R'
 * '2. Simulating with uncertainty.R'
 * '4. CUI analysis.R' - this script will also source and run '3. ER analysis.R'
