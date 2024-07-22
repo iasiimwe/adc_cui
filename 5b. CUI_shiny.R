@@ -12,6 +12,7 @@ trap.rule <- function(x,y) sum(diff(x) * (y[-1] + y[-length(y)])) / 2
 
 # Process data
 source("5a. Process Shiny data.R")
+options(warn = 2)
 
 # Define UI
 ui <- fluidPage(
@@ -63,7 +64,7 @@ ui <- fluidPage(
       h4(class = "bold-heading", "PK metrics"),
       radioButtons("adc", 
                    label = HTML('<span style="font-weight: normal;">Select ADC:</span>'),
-                   choices = c("T-DM1", "T-DXd"), selected = "T-DM1"),
+                   choices = c("T-DM1", "T-DXd"), selected = "T-DXd"),
       radioButtons("scenario", 
                    label = HTML('<span style="font-weight: normal;">Select Scenario:</span>'),
                    choices = c("Scenario 1 (only phase I)", "Scenario 2 (phases I and II)", "Scenario 3 (all phases)"), 
@@ -75,7 +76,7 @@ ui <- fluidPage(
       checkboxGroupInput("outcomes",
                          label = HTML('<span style="font-weight: normal;">Select Outcomes:</span>'),
                          choices = c("ORR", "PFS", "DLT"), 
-                         selected =  c("ORR", "PFS", "DLT")),
+                         selected =  c("ORR", "DLT")),
   ),
   div(class = "main-content",
       plotOutput("mainPlot")
@@ -85,7 +86,7 @@ ui <- fluidPage(
       # sliderInput("cui_threshold", HTML('<span style="font-size: 1.3em;">CUI threshold</span>'),
       #               min = 0, max = 20, value = 1),
       sliderTextInput("cui_threshold", HTML('<span style="font-size: 1.3em;">CUI threshold</span>'),
-                      choices = as.character(c(0, seq(2.5, 20, 2.5))), selected = "0", grid = TRUE),
+                      choices = as.character(c(0, seq(2.5, 20, 2.5))), selected = "2.5", grid = TRUE),
       # h4(class = "bold-heading", "Weights"),
       radioButtons("weights_choice", HTML('<span style="font-size: 1.3em;">Weights</span>'),
                    choices = c("Principal component analysis", "User weights"), 
@@ -143,6 +144,7 @@ server <- function(input, output, session) {
     weights <- sapply(seq_along(outcomes), function(i) input[[paste0("weight_", i)]])
     # Ensure weights sum to 100
     weights <- unlist(weights)
+    if (length(weights) == 0) weights <- setNames(rep(50, length(outcomes)), outcomes)
 
     if (any(is.na(weights))) {
       weights[is.na(weights)] <- 50  # Set default value to 50 if NA found
@@ -162,11 +164,10 @@ server <- function(input, output, session) {
     req(input$weights_choice == "User weights")
     outcomes <- selected_outcomes()$outcomes
     weights <- unlist(sapply(seq_along(outcomes), function(i) input[[paste0("weight_", i)]]))
+    if (length(weights) == 0) weights <- setNames(rep(50, length(outcomes)), outcomes)
     total_weight <- sum(weights)
     if (abs(total_weight - 100) > 2) weights <- weights / total_weight
-    weights <- weights / 100
-    names(weights) <- outcomes
-    weights
+    weights <- setNames(weights / 100, outcomes)
   })
   
   # Render main plot
@@ -225,7 +226,7 @@ server <- function(input, output, session) {
     } else {
       weights <- user_weights()
       new_names <- colnames(select(ungroup(pk_tb), -id, -OCC, -AMT, -x1, -x2))
-      names(weights) <- new_names
+      weights <- setNames(weights, new_names)
     }
     
     # Add weights
