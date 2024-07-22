@@ -1,0 +1,22 @@
+DESCRIPTION:
+The administration is via an infusion (requires INFUSION RATE or INFUSION DURATION column-type in the data set).
+The PK model has a central compartment (volume V1), a peripheral compartment (volume V2, intercompartmental clearance Q), and a linear elimination (clearance Cl).
+
+[LONGITUDINAL]
+input = {Cl, V1, Q, V2, N, prop_err}
+N = {use=regressor}
+
+PK:
+; Parameter transformations
+V = V1
+k12 = Q/V1
+k21 = Q/V2
+
+; PK model definition
+Cc = pkmodel(V, Cl, k12, k21)
+
+; Add weighted proportional error
+Cc_wghtd = Cc + Cc * prop_err/sqrt(N)
+
+OUTPUT:
+output = {Cc_wghtd}
