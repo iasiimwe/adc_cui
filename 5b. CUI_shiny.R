@@ -12,7 +12,6 @@ trap.rule <- function(x,y) sum(diff(x) * (y[-1] + y[-length(y)])) / 2
 
 # Process data
 source("5a. Process Shiny data.R")
-options(warn = 2)
 
 # Define UI
 ui <- fluidPage(
@@ -76,7 +75,7 @@ ui <- fluidPage(
       checkboxGroupInput("outcomes",
                          label = HTML('<span style="font-weight: normal;">Select Outcomes:</span>'),
                          choices = c("ORR", "PFS", "DLT"), 
-                         selected =  c("ORR", "DLT")),
+                         selected =  c("ORR", "PFS", "DLT")),
   ),
   div(class = "main-content",
       plotOutput("mainPlot")
