@@ -11,7 +11,7 @@ This repository contains the study materials and analysis for the project titled
 Before analysis, install the following R packages:
    ```{r install required packages, include = FALSE}
    # List of required packages
-    required_packages <- c("bslib", "ComplexUpset", "export", "ggbump", "ggh4x", "mgcv", "patchwork", "PKNCA", "RColorBrewer", "readxl", "shiny", "shinyjs", "shinyWidgets", "tidyverse")
+    required_packages <- c("bslib", "ComplexUpset", "export", "ggbump", "ggh4x", "mgcv", "patchwork", "PKNCA", "RColorBrewer", "readxl", "scales", "shiny", "shinyjs", "shinyWidgets", "tidyverse")
 
   # Function to install missing packages
   install_if_missing <- function(packages) {
