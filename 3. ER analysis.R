@@ -5,6 +5,7 @@ library(ComplexUpset)
 library(patchwork)
 library(readxl)
 library(RColorBrewer)
+library(ggh4x)
 
 # NOTE: Do not run it. Source it through "4. CUI analysis.R"
 
@@ -441,12 +442,13 @@ scenario_3_data <- plot_dat %>%
 er_plot <- scenario_1_data %>%
   bind_rows(scenario_2_data) %>%
   bind_rows(scenario_3_data) %>%
-  ggplot(aes(x, Predicted, color = Outcome)) + # , lty = Outcome
+  mutate(x = x/1000) %>% # Change from ng to µg for visual clarity
+  ggplot(aes(x, Predicted, color = Outcome)) +
   geom_line(linewidth = 1) +
   geom_point(aes(x, Observed, color = Outcome, shape = Outcome)) +
   scale_shape_manual(values = seq(0, length(ER_outcomes))) +
-  facet_wrap(Scenario ~ PK_metric, nrow = 3, scales = "free_x") +
-  xlab(paste0(gsub("T", "T-", ADC), " concentrations (ng/mL[/hr])")) + 
+  facet_nested_wrap(vars(Scenario, PK_metric), nrow = 3, scales = "free_x") +
+  xlab(paste0(gsub("T", "T-", ADC), " concentrations (µg/mL[/hr])")) + 
   ylab("Predicted outcome probability") +
   ggtitle(paste0(ifelse(ADC == "TDM1", "A. ", "B. "), gsub("T", "T-", ADC))) +
   theme_bw() +
@@ -456,6 +458,7 @@ er_plot <- scenario_1_data %>%
         strip.text = element_text(size = 12, color = "black", face = "bold"),
         legend.title = element_text(size = 10, face = "bold"),
         legend.text = element_text(size = 10)
-  ) 
+  ) +
+  scale_x_continuous(labels = label_comma())
 x <- if (ADC == "TDM1") 0.8 else 0.8
 graph2ppt(er_plot, paste0("results/", ADC, "_ER_EDA"), append = FALSE, width = 16 * x, height = 12 * x)

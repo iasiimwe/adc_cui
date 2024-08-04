@@ -425,7 +425,8 @@ for (PK_metric in c("Cmax", "AUC", "Cmin")) { # Loop through the pk-metrics
           geom_text(aes(label = if_else(Percentage >= 10, label, "")), hjust = -0.1, color="white") +
           geom_text(aes(label = if_else(Percentage < 10, label, "")), hjust = 1.2, color="black")
         
-        manual_colour_values_all <- c(brewer.pal(3, "Blues")[3], brewer.pal(4, "Reds")[4])
+        # manual_colour_values_all <- c(brewer.pal(3, "Blues")[3], brewer.pal(4, "Reds")[4])
+        manual_colour_values_all <- c("#00BFC4", "#F8766D")
         order_all <- c("ORR", "DLT")
         
         doses <- doses %>%
@@ -478,7 +479,8 @@ for (PK_metric in c("Cmax", "AUC", "Cmin")) { # Loop through the pk-metrics
                 panel.grid.major = element_blank(), # hide grid lines
                 panel.grid.minor = element_blank()
           ) +
-          scale_y_continuous(expand=expansion(mult=c(0, 0.01)))
+          scale_y_continuous(expand=expansion(mult=c(0, 0.01))) +
+          scale_fill_manual(values = manual_colour_values_all)
         
         layout <- "
 ABBB

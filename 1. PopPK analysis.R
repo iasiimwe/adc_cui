@@ -79,8 +79,8 @@ for (ADC in c("TDM1", "TDXd")) {
           strip.text = element_text(size = 14, color = "red", face = "bold")
     ) +
     scale_y_log10() +  
-    guides(colour = guide_legend(nrow = nrow2))
-  if (ADC != "TDM1") ADC_plot <- ADC_plot + theme(legend.position = "bottom")
+    guides(colour = guide_legend(nrow = nrow2, reverse = TRUE))
+  if (ADC != "TDM1") ADC_plot <- ADC_plot + theme(legend.position = "bottom") + guides(colour = guide_legend(nrow = nrow2, reverse = FALSE))
   x <- if (ADC == "TDM1") 0.8 else 0.8
   graph2ppt(ADC_plot, paste0("results/", ADC, "_ADC"), append = FALSE, width = 16 * x, height = 9 * x)
   
@@ -108,8 +108,8 @@ for (ADC in c("TDM1", "TDXd")) {
           strip.text = element_text(size = 14, color = "red", face = "bold")
     ) +
     scale_y_log10() +  
-    guides(colour = guide_legend(nrow = nrow2))
-  if (ADC != "TDM1") PL_plot <- PL_plot + theme(legend.position = "bottom")
+    guides(colour = guide_legend(nrow = nrow2, reverse = TRUE))
+  if (ADC != "TDM1") PL_plot <- PL_plot + theme(legend.position = "bottom") + guides(colour = guide_legend(nrow = nrow2, reverse = FALSE))
   x <- if (ADC == "TDM1") 0.8 else 0.8
   graph2ppt(PL_plot, paste0("results/", ADC, "_PL"), append = FALSE, width = 16 * x, height = 9 * x)
   

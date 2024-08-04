@@ -12,6 +12,7 @@ trap.rule <- function(x,y) sum(diff(x) * (y[-1] + y[-length(y)])) / 2
 
 # Process data
 source("5a. Process Shiny data.R")
+options(warn = 2)
 
 # Define UI
 ui <- fluidPage(
@@ -248,7 +249,7 @@ server <- function(input, output, session) {
 
     # Make plot
     pk_tb_plot <- rename(pk_tb, x = x1)
-    plot_label <- if (pk_x_axis == "AUC") paste0(gsub("T-{0,2}", "T-", adc), " concentrations (ng/mL/day)") else paste0(gsub("T-{0,2}", "T-", adc), " concentrations (ng/mL)")
+    plot_label <- if (pk_x_axis == "AUC") paste0(gsub("T-{0,2}", "T-", adc), " concentrations (µg/mL/day)") else paste0(gsub("T-{0,2}", "T-", adc), " concentrations (µg/mL)")
     pk_tb_plot <- pk_tb_plot %>%
       select(OCC, x, all_of(columns_to_mutate)) %>%
       pivot_longer(!c(OCC, x)) %>%
@@ -256,7 +257,7 @@ server <- function(input, output, session) {
     
     # Define manual color, line types, and names
     manual_colour_names <- c("CUI", "ORR", "PFS", "DLT")
-    manual_colour_values <- c("CUI" = "black", "Efficacy: ORR" = "#619CFF", "Efficacy: PFS" = "lightgreen", "Safety: DLT" = "#F8766D")
+    manual_colour_values <- c("CUI" = "black", "Efficacy: ORR" = "#00BFC4", "Efficacy: PFS" = "#C77CFF", "Safety: DLT" = "#F8766D")
     manual_line_width <- c("CUI" = 1.5, "Efficacy: ORR" = 1, "Efficacy: PFS" = 1, "Safety: DLT" = 1)
     manual_colour_values <- manual_colour_values[manual_colour_names %in% c("CUI", Outcomes)]
     manual_line_width <- manual_line_width[manual_colour_names %in% c("CUI", Outcomes)]
@@ -377,9 +378,15 @@ server <- function(input, output, session) {
       geom_text(aes(label = ifelse(highlight != "highlight", label, ""), hjust = 1), colour = "black", angle = 0, size = 3) +
       coord_flip()
     
+    # Create a custom labeling function to divide values by 10
+    label_divided_by_1000 <- function(x) {
+      scales::label_comma()(x / 1000) # Change from ng to µg for visual clarity
+    }
+    
     # Main plot
+    dose_levels <- if (adc == "T-DM1") c("0.3", "0.6", "1.2", "1.8", "2.4", "3.6", "4.8") else c(0.8, 1.6, 3.2, 5.4, 6.4, 7.4, 8)
     pk_tb_plot <- pk_tb_plot %>%
-      mutate(OCC = factor(as.character(OCC), levels = c("0.3", "0.6", "1.2", "1.8", "2.4", "3.6", "4.8")), 
+      mutate(OCC = factor(as.character(OCC), levels = dose_levels), 
              name = factor(name, levels = c("CUI", outcome_order))) %>%
       ggplot() +
       geom_smooth(aes(x, value, color = name, linewidth = name), 
@@ -400,7 +407,7 @@ server <- function(input, output, session) {
       guides(color = guide_legend("Legend"), 
              linewidth = guide_legend("Legend")) +
       ggtitle(paste0(pk_x_axis, " as x-axis")) +
-      scale_x_continuous(labels = scales::label_scientific()) +
+      scale_x_continuous(labels = label_divided_by_1000) +
       coord_cartesian(ylim = c(0, 1.05)) +
       annotate("text", 
                x = filter(range_tb, dose == as.numeric(AUC_cui$dose[1]))$min, 
